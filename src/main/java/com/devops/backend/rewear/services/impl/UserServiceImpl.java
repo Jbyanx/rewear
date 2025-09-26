@@ -51,8 +51,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public GetUser save(SaveUser saveUser) {
-        return userMapper.toGetUser(
+    public GetUserProfile save(SaveUser saveUser) {
+        return userMapper.toGetUserProfile(
                 userRepository.save(userMapper.toEntity(saveUser))
         );
     }
