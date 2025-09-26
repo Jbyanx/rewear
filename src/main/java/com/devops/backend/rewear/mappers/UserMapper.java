@@ -22,7 +22,7 @@ public interface UserMapper {
 
     // Entidad → Perfil completo (para el dueño de la cuenta)
     @Mapping(target = "role", source = "role") // string
-    GetUserProfile toGetMyUserProfile(User entity);
+    GetUserProfile toGetUserProfile(User entity);
 
     // Entidad → Perfil reducido (para mostrar a otros)
     GetUser toGetUser(User entity);
