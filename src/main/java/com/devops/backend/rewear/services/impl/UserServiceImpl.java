@@ -46,25 +46,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public GetUser getByUsername(String username) {
-        return null;
+        return userRepository.findByUsername(username)
+                .map(userMapper::toGetUser)
+                .orElseThrow(() -> new  UserNotFoundException("Usuario con username "+username+" no encontrado en BDD"));
+    }
+
+    @Override
+    public User getEntityByUsername(String username) {
+        return userRepository.getByUsername(username)
+                .orElseThrow(() -> new  UserNotFoundException("Usuario con username "+username+" no encontrado en BDD"));
     }
 
     @Override
     public GetUser getByEmail(String email) {
         return null;
-    }
-
-    @Override
-    public GetUserProfile save(SaveUser saveUser) {
-        User entity = userMapper.toEntity(saveUser);
-
-        entity.setRole(Role.USER);
-        entity.setRating(BigDecimal.valueOf(0.0));
-        entity.setTotalRatings(0);
-
-        return userMapper.toGetUserProfile(
-                userRepository.save(entity)
-        );
     }
 
     @Override
