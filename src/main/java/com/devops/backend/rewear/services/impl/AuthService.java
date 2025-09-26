@@ -84,9 +84,14 @@ public class AuthService {
         );
         authenticationManager.authenticate(authentication);
 
-        UserDetails user = userService.getEntityByUsername(loginRequest.username());
-        String jwt = jwtService.generateToken(user, generateExtraClaims((User) user));
-        return new LoginResponse(jwt, ((User) user).getId());
+        User user = userService.getEntityByUsername(loginRequest.username());
+        String jwt = jwtService.generateToken(user, generateExtraClaims(user));
+
+        GetUserProfile userProfile = userMapper.toGetUserProfile(user);
+        return new LoginResponse(
+                jwt,
+                userProfile
+        );
     }
 
     private Map<String, Object> generateExtraClaims(User user) {
