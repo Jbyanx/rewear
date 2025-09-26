@@ -22,5 +22,11 @@ public class GlobalExceptionHandler {
         response.put("error", "El email ya está en uso");
         return ResponseEntity.badRequest().body(response);
     }
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleUserNotFoundException(UserNotFoundException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", ex.getMessage());
+        return ResponseEntity.badRequest().body(response);
+    }
 }
 
