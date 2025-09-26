@@ -1,0 +1,13 @@
+{
+  "properties": [
+    {
+      "name": "security.jwt.expiration-in-minutes",
+      "type": "java.lang.String",
+      "description": "cantidad de minutos que dura el token JWT siendo valido para hacer peticiones"
+    },
+    {
+      "name": "security.jwt.secret-key",
+      "type": "java.lang.String",
+      "description": "clave secreta para firmar los tokens"
+    }
+  ] }
