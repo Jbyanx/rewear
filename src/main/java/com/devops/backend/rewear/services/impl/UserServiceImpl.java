@@ -3,6 +3,8 @@ package com.devops.backend.rewear.services.impl;
 import com.devops.backend.rewear.dtos.request.SaveUser;
 import com.devops.backend.rewear.dtos.response.GetUser;
 import com.devops.backend.rewear.dtos.response.GetUserProfile;
+import com.devops.backend.rewear.entities.User;
+import com.devops.backend.rewear.entities.enums.Role;
 import com.devops.backend.rewear.exceptions.UserNotFoundException;
 import com.devops.backend.rewear.mappers.UserMapper;
 import com.devops.backend.rewear.repositories.UserRepository;
@@ -10,6 +12,8 @@ import com.devops.backend.rewear.services.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -52,8 +56,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public GetUserProfile save(SaveUser saveUser) {
+        User entity = userMapper.toEntity(saveUser);
+
+        entity.setRole(Role.USER);
+        entity.setRating(BigDecimal.valueOf(0.0));
+        entity.setTotalRatings(0);
+
         return userMapper.toGetUserProfile(
-                userRepository.save(userMapper.toEntity(saveUser))
+                userRepository.save(entity)
         );
     }
 
