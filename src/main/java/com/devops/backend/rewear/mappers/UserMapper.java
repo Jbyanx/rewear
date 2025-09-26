@@ -4,6 +4,8 @@ import com.devops.backend.rewear.dtos.request.SaveUser;
 import com.devops.backend.rewear.dtos.response.GetUserProfile;
 import com.devops.backend.rewear.dtos.response.GetUser;
 import com.devops.backend.rewear.entities.User;
+import org.mapstruct.InheritConfiguration;
+import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -26,4 +28,10 @@ public interface UserMapper {
 
     // Entidad → Perfil reducido (para mostrar a otros)
     GetUser toGetUser(User entity);
+
+    @InheritInverseConfiguration
+    User toEntity(GetUserProfile getUser);
+
+    @InheritInverseConfiguration
+    SaveUser toSaveUser(User user);
 }
