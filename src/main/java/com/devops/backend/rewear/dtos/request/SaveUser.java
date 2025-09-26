@@ -31,6 +31,9 @@ public record SaveUser(
         @Size(min = 8, max = 72, message = "La contraseña debe tener entre {min} y {max} caracteres")
         String password,
 
+        @NotBlank(message = "La contraseña no debe estar vacía")
+        String repeatPassword,
+
         @NotBlank(message = "La dirección no debe estar vacía")
         @Size(min = 6, max = 150, message = "La dirección debe tener entre {min} y {max} caracteres")
         String address,
