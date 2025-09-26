@@ -1,4 +1,4 @@
-package com.devops.backend.rewear.dtos;
+package com.devops.backend.rewear.dtos.request;
 
 import com.devops.backend.rewear.entities.enums.DocumentType;
 import com.devops.backend.rewear.entities.enums.Genre;
