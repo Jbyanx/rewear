@@ -1,7 +1,7 @@
 package com.devops.backend.rewear.mappers;
 
 import com.devops.backend.rewear.dtos.request.SaveUser;
-import com.devops.backend.rewear.dtos.response.GetMyUserProfile;
+import com.devops.backend.rewear.dtos.response.GetUserProfile;
 import com.devops.backend.rewear.dtos.response.GetUser;
 import com.devops.backend.rewear.entities.User;
 import org.mapstruct.Mapper;
@@ -22,7 +22,7 @@ public interface UserMapper {
 
     // Entidad → Perfil completo (para el dueño de la cuenta)
     @Mapping(target = "role", source = "role") // string
-    GetMyUserProfile toGetMyUserProfile(User entity);
+    GetUserProfile toGetMyUserProfile(User entity);
 
     // Entidad → Perfil reducido (para mostrar a otros)
     GetUser toGetUser(User entity);

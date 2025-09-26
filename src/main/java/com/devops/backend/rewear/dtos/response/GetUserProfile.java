@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public record GetMyUserProfile(
+public record GetUserProfile(
         Long id,
         String firstName,
         String lastName,
