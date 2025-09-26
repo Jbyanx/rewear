@@ -12,7 +12,7 @@ public interface UserService {
     GetUserProfile getMyProfile(Long id);
     GetUser getByUsername(String username);
     GetUser getByEmail(String email);
-    GetUser save(SaveUser saveUser);
+    GetUserProfile save(SaveUser saveUser);
     GetUser updateById(Long id, SaveUser saveUser);
     GetUser desactivate(Long id);
 }
