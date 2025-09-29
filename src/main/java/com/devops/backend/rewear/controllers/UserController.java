@@ -1,6 +1,7 @@
 package com.devops.backend.rewear.controllers;
 
 import com.devops.backend.rewear.services.UserService;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,5 +14,9 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/hola")
+    public String hola() {
+        return "hola";
+    }
 
 }
