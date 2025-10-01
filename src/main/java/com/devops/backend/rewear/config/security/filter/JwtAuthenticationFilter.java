@@ -1,6 +1,5 @@
 package com.devops.backend.rewear.config.security.filter;
 
-import com.devops.backend.rewear.services.UserService;
 import com.devops.backend.rewear.services.impl.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -11,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Component;
@@ -26,12 +26,12 @@ import java.util.Map;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
-    private final UserService userService;
+    private final UserDetailsService userDetailsService;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public JwtAuthenticationFilter(JwtService jwtService, UserService userService) {
+    public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userService) {
         this.jwtService = jwtService;
-        this.userService = userService;
+        this.userDetailsService = userService;
     }
 
     @Override
@@ -57,13 +57,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             //3. Obtener el subject/username desde el token, esta acción a su vez valida el token
-            String username = jwtService.extractUsername(authHeader);
+            String username = jwtService.extractUsername(token);
 
             //4. Settear objeto authentication dentro de SecurityContextHolder
-            UserDetails user = userService.getEntityByUsername(username);
+            UserDetails user = userDetailsService.loadUserByUsername(username);
 
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    username, null, user.getAuthorities());
+                    user, null, user.getAuthorities());
 
             authToken.setDetails(new WebAuthenticationDetails(request));
 
