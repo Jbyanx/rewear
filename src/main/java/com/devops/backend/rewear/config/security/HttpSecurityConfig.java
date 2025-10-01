@@ -41,6 +41,7 @@ public class HttpSecurityConfig {
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests
                             .requestMatchers("/oauth/**", "/auth/**").permitAll()
+                            .requestMatchers("/h2-console/**").permitAll()
                             .requestMatchers("/error").permitAll()
                             .anyRequest().authenticated();
                 })
