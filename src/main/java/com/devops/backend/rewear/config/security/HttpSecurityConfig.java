@@ -1,7 +1,6 @@
 package com.devops.backend.rewear.config.security;
 
 import com.devops.backend.rewear.config.security.filter.JwtAuthenticationFilter;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -45,6 +44,7 @@ public class HttpSecurityConfig {
                             .requestMatchers("/error").permitAll()
                             .anyRequest().authenticated();
                 })
+                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin())) // 👈 necesario para H2 Console
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(e -> {
                     e.authenticationEntryPoint(authenticationEntryPoint);
