@@ -1,6 +1,7 @@
 package com.devops.backend.rewear.controllers;
 
 import com.devops.backend.rewear.dtos.response.GetUser;
+import com.devops.backend.rewear.dtos.response.GetUserProfile;
 import com.devops.backend.rewear.services.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +29,11 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<GetUser> getUser(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getById(id));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<GetUserProfile> getMyProfile() {
+        return ResponseEntity.ok(userService.getMyProfile());
     }
 
 }
