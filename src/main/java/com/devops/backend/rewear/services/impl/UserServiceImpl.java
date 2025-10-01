@@ -4,7 +4,6 @@ import com.devops.backend.rewear.dtos.request.SaveUser;
 import com.devops.backend.rewear.dtos.response.GetUser;
 import com.devops.backend.rewear.dtos.response.GetUserProfile;
 import com.devops.backend.rewear.entities.User;
-import com.devops.backend.rewear.entities.enums.Role;
 import com.devops.backend.rewear.exceptions.UserNotAuthenticatedException;
 import com.devops.backend.rewear.exceptions.UserNotFoundException;
 import com.devops.backend.rewear.mappers.UserMapper;
@@ -14,18 +13,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final AuthService authService;
+    private final CurrentUserService currentUserService;
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, AuthService authService) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, CurrentUserService currentUserService) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
-        this.authService = authService;
+        this.currentUserService = currentUserService;
     }
 
     @Override
@@ -44,12 +41,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public GetUserProfile getMyProfile() {
-        User authenticatedUser = authService.getAuthenticatedUser();
-
-        if(authenticatedUser == null) {
-            throw new UserNotAuthenticatedException("Oops, no hay un usuario autenticado");
-        }
-        return userMapper.toGetUserProfile(authenticatedUser);
+        return userMapper.toGetUserProfile(currentUserService.getAuthenticatedUser());
     }
 
     @Override

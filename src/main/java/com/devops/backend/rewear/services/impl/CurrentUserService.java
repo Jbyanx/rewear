@@ -17,6 +17,6 @@ public class CurrentUserService {
         if (principal instanceof User user) {
             return user;
         }
-        throw new UserNotAuthenticatedException("Unexpected principal type");
+        throw new UserNotAuthenticatedException("El principal no es de tipo User, revise la configuración de UserDetailsService");
     }
 }
