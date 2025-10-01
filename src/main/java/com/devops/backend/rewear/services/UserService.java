@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 public interface UserService {
     Page<GetUser>  getUsers(Pageable pageable);
     GetUser getById(Long id);
-    GetUserProfile getMyProfile(Long id);
+    GetUserProfile getMyProfile();
     GetUser getByUsername(String username);
     User getEntityByUsername(String username);
     GetUser getByEmail(String email);
