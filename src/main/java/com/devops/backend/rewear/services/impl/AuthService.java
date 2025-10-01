@@ -12,7 +12,6 @@ import com.devops.backend.rewear.exceptions.UserNotFoundException;
 import com.devops.backend.rewear.exceptions.UsernameAlreadyExistsException;
 import com.devops.backend.rewear.mappers.UserMapper;
 import com.devops.backend.rewear.repositories.UserRepository;
-import com.devops.backend.rewear.services.UserService;
 import com.devops.backend.rewear.util.PasswordValidator;
 import jakarta.validation.Valid;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,15 +29,13 @@ import java.util.Map;
 
 @Service
 public class AuthService {
-    private final UserService userService;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
-    public AuthService(UserService userService, UserMapper userMapper, PasswordEncoder passwordEncoder, PasswordEncoder passwordEncoder1, UserRepository userRepository, AuthenticationManager authenticationManager, JwtService jwtService) {
-        this.userService = userService;
+    public AuthService(UserMapper userMapper, PasswordEncoder passwordEncoder, PasswordEncoder passwordEncoder1, UserRepository userRepository, AuthenticationManager authenticationManager, JwtService jwtService) {
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder1;
         this.userRepository = userRepository;
@@ -84,7 +81,9 @@ public class AuthService {
         );
         authenticationManager.authenticate(authentication);
 
-        User user = userService.getEntityByUsername(loginRequest.username());
+        User user = userRepository.getReferenceByUsername(loginRequest.username())
+                .orElseThrow(() -> new UserNotFoundException("El usuario "+ loginRequest.username()+ " no existe en BDD"));
+
         String jwt = jwtService.generateToken(user, generateExtraClaims(user));
 
         GetUserProfile userProfile = userMapper.toGetUserProfile(user);
@@ -100,15 +99,5 @@ public class AuthService {
         extraClaims.put("role", user.getRole().name());
         extraClaims.put("currentUserId", user.getId());
         return extraClaims;
-    }
-
-    public User getAuthenticatedUser() {
-        UsernamePasswordAuthenticationToken auth =
-                (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-
-        String authenticatedUser = auth.getPrincipal().toString();
-
-        return userRepository.findByUsername(authenticatedUser)
-                .orElseThrow(() -> new UserNotFoundException(authenticatedUser+" not found"));
     }
 }
