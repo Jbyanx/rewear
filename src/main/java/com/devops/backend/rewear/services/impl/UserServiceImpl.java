@@ -5,6 +5,7 @@ import com.devops.backend.rewear.dtos.response.GetUser;
 import com.devops.backend.rewear.dtos.response.GetUserProfile;
 import com.devops.backend.rewear.entities.User;
 import com.devops.backend.rewear.entities.enums.Role;
+import com.devops.backend.rewear.exceptions.UserNotAuthenticatedException;
 import com.devops.backend.rewear.exceptions.UserNotFoundException;
 import com.devops.backend.rewear.mappers.UserMapper;
 import com.devops.backend.rewear.repositories.UserRepository;
@@ -19,10 +20,12 @@ import java.math.BigDecimal;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final AuthService authService;
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, AuthService authService) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.authService = authService;
     }
 
     @Override
@@ -40,8 +43,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public GetUserProfile getMyProfile(Long id) {
-        return null;
+    public GetUserProfile getMyProfile() {
+        User authenticatedUser = authService.getAuthenticatedUser();
+
+        if(authenticatedUser == null) {
+            throw new UserNotAuthenticatedException("Oops, no hay un usuario autenticado");
+        }
+        return userMapper.toGetUserProfile(authenticatedUser);
     }
 
     @Override
