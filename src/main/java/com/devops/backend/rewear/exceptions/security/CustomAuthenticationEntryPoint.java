@@ -1,4 +1,4 @@
-package com.devops.backend.rewear.exceptions;
+package com.devops.backend.rewear.exceptions.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
@@ -18,15 +18,14 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, org.springframework.security.core.AuthenticationException authException) throws IOException, ServletException {
-        System.out.println("=== CustomAuthenticationEntryPoint ejecutado ===");
 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
         Map<String, Object> errorResponse = new HashMap<>();
-        errorResponse.put("error", "No autenticado");
-        errorResponse.put("message", "Debes iniciar sesión para acceder a este recurso");
+        errorResponse.put("error", "No autenticado - custom auth entry oint funcionando");
+        errorResponse.put("message", "El token es inválido o ha expirado. Inicia sesión nuevamente.");
         errorResponse.put("backendMessage", authException.getMessage());
         errorResponse.put("timestamp", LocalDateTime.now().toString());
         errorResponse.put("path", request.getRequestURI());
