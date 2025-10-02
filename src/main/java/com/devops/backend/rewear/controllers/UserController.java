@@ -21,8 +21,14 @@ public class UserController {
     }
 
     @GetMapping
+    public ResponseEntity<Page<GetUser>> getActiveUsers(Pageable pageable) {
+        Page<GetUser> getUserPage = userService.getActiveUsers(pageable);
+        return ResponseEntity.ok(getUserPage);
+    }
+
+    @GetMapping("/all")
     public ResponseEntity<Page<GetUser>> getAllUsers(Pageable pageable) {
-        Page<GetUser> getUserPage = userService.getUsers(pageable);
+        Page<GetUser> getUserPage = userService.getAllUsers(pageable);
         return ResponseEntity.ok(getUserPage);
     }
 
