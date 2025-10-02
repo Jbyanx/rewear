@@ -121,12 +121,26 @@ public class UserServiceImpl implements UserService {
     public GetUser updateStatus(Long userId, UserStatus userStatus) {
         User currentUser = currentUserService.getAuthenticatedUser();
 
-        if(!(currentUser.getRole().equals(Role.ADMIN) || currentUser.getId().equals(userId))) {
-            throw new PermissionDeniedException("Vaya, parece que no tienes permisos para solicitar este recurso");
-        }
+        boolean isAdmin = currentUser.getRole().equals(Role.ADMIN);
+        boolean isOwner = currentUser.getId().equals(userId);
+
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("Error al desactivar el usuario en BDD, no existe"));
-        user.setActive(userStatus.name().equals("ACTIVE"));
+                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
+
+        // Caso: el propio usuario quiere desactivar su cuenta
+        // asi controlamos que el usuario no pueda reactivarse
+        if (isOwner && userStatus == UserStatus.INACTIVE) {
+            user.setActive(false);
+        }
+        // Caso: admin puede activar o desactivar cualquier cuenta
+        else if (isAdmin) {
+            user.setActive(userStatus == UserStatus.ACTIVE);
+        }
+        else {
+            throw new PermissionDeniedException("No tienes permisos para esta acción");
+        }
+
         return userMapper.toGetUser(userRepository.save(user));
     }
+
 }
