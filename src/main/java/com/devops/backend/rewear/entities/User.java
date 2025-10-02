@@ -130,4 +130,9 @@ public class User implements UserDetails {
                 new SimpleGrantedAuthority("ROLE_" + role.name())
         );
     }
+
+    @Override
+    public boolean isEnabled() {
+        return this.isActive;
+    }
 }

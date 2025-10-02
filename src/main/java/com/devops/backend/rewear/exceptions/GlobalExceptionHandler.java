@@ -28,5 +28,11 @@ public class GlobalExceptionHandler {
         response.put("error", ex.getMessage());
         return ResponseEntity.badRequest().body(response);
     }
+    @ExceptionHandler(PermissionDeniedException.class)
+    public ResponseEntity<Map<String, String>> handlePermissionDeniedException(PermissionDeniedException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", ex.getMessage());
+        return ResponseEntity.badRequest().body(response);
+    }
 }
 
