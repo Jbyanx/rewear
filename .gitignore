@@ -32,3 +32,5 @@ build/
 ### VS Code ###
 .vscode/
 /.env
+/out/artifacts/re_wear_jar/re-wear.jar
+/data/reweardb.mv.db
