@@ -16,23 +16,23 @@ import java.util.Map;
 @Service
 public class JwtService {
 
-    @Value("${SECURITY_JWT_ACCESS_EXPIRATION_IN_MINUTES}")
-    private Long ACCESS_EXPIRATION_IN_MINUTES;
+    @Value("${security.jwt.access-expiration-in-minutes}")
+    private Long accessExpirationInMinutes;
 
-    @Value("${SECURITY_JWT_REFRESH_EXPIRATION_IN_MINUTES}")
-    private Long REFRESH_EXPIRATION_IN_MINUTES;
+    @Value("${security.jwt.refresh-expiration-in-minutes}")
+    private Long refreshExpirationInMinutes;
 
-    @Value("${SECURITY_JWT_SECRET_KEY}")
-    private String SECRET_KEY;
+    @Value("${security.jwt.secret-key}")
+    private String secretKey;
 
     // Generar Access Token
     public String generateAccessToken(UserDetails user, Map<String, Object> extraClaims) {
-        return buildToken(user, extraClaims, ACCESS_EXPIRATION_IN_MINUTES);
+        return buildToken(user, extraClaims, accessExpirationInMinutes);
     }
 
     // Generar Refresh Token
     public String generateRefreshToken(UserDetails user, Map<String, Object> extraClaims) {
-        return buildToken(user, extraClaims, REFRESH_EXPIRATION_IN_MINUTES);
+        return buildToken(user, extraClaims, refreshExpirationInMinutes);
     }
 
     private String buildToken(UserDetails user, Map<String, Object> extraClaims, Long expirationInMinutes) {
@@ -70,7 +70,7 @@ public class JwtService {
     }
 
     private SecretKey generateKey() {
-        byte[] passwordDecoded = Decoders.BASE64.decode(SECRET_KEY);
+        byte[] passwordDecoded = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(passwordDecoded);
     }
 
