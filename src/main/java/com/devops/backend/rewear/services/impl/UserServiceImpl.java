@@ -4,11 +4,16 @@ import com.devops.backend.rewear.dtos.request.SaveUser;
 import com.devops.backend.rewear.dtos.response.GetUser;
 import com.devops.backend.rewear.dtos.response.GetUserProfile;
 import com.devops.backend.rewear.entities.User;
+import com.devops.backend.rewear.entities.enums.Role;
 import com.devops.backend.rewear.entities.enums.UserStatus;
+import com.devops.backend.rewear.exceptions.EmailAlreadyExistsException;
+import com.devops.backend.rewear.exceptions.PermissionDeniedException;
 import com.devops.backend.rewear.exceptions.UserNotFoundException;
+import com.devops.backend.rewear.exceptions.UsernameAlreadyExistsException;
 import com.devops.backend.rewear.mappers.UserMapper;
 import com.devops.backend.rewear.repositories.UserRepository;
 import com.devops.backend.rewear.services.UserService;
+import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -48,7 +53,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public GetUserProfile getMyProfile() {
-        //TODO solo propietarios
         return userMapper.toGetUserProfile(currentUserService.getAuthenticatedUser());
     }
 
@@ -75,15 +79,31 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public GetUser updateById(Long id, SaveUser saveUser) {
-        //TODO admins y propietarios
+        User currentUser = currentUserService.getAuthenticatedUser();
+
         if(!userRepository.existsById(id)) throw new UserNotFoundException("usuario con id "+id+" no encontrado en BDD");
+
+        if(!(currentUser.getRole().equals(Role.ADMIN) || currentUser.getId().equals(id))) {
+            throw new PermissionDeniedException("Vaya, parece que no tienes permisos para solicitar este recurso");
+        }
+
         User oldUser = userRepository.getReferenceById(id);
 
         if (saveUser.firstName() != null) oldUser.setFirstName(saveUser.firstName());
         if (saveUser.lastName() != null) oldUser.setLastName(saveUser.lastName());
         if (saveUser.phoneNumber() != null) oldUser.setPhoneNumber(saveUser.phoneNumber());
-        if (saveUser.email() != null) oldUser.setEmail(saveUser.email());
-        if (saveUser.username() != null) oldUser.setUsername(saveUser.username());
+        if (saveUser.email() != null){
+            if(userRepository.existsByEmail(saveUser.email())){
+                throw new EmailAlreadyExistsException("Error al actualizar el usuario, el email "+saveUser.email()+" ya está en uso");
+            }
+            oldUser.setEmail(saveUser.email());
+        }
+        if (saveUser.username() != null){
+            if(userRepository.existsByUsername(saveUser.username())){
+                throw new UsernameAlreadyExistsException("Error al actualizar el usuario, el username "+saveUser.username()+" ya está en uso");
+            }
+            oldUser.setUsername(saveUser.username());
+        }
         if (saveUser.address() != null) oldUser.setAddress(saveUser.address());
         if (saveUser.city() != null) oldUser.setCity(saveUser.city());
         if (saveUser.country() != null) oldUser.setCountry(saveUser.country());
@@ -99,7 +119,11 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public GetUser updateStatus(Long userId, UserStatus userStatus) {
-        //TODO solo desactiva el admin
+        User currentUser = currentUserService.getAuthenticatedUser();
+
+        if(!(currentUser.getRole().equals(Role.ADMIN) || currentUser.getId().equals(userId))) {
+            throw new PermissionDeniedException("Vaya, parece que no tienes permisos para solicitar este recurso");
+        }
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("Error al desactivar el usuario en BDD, no existe"));
         user.setActive(userStatus.name().equals("ACTIVE"));
