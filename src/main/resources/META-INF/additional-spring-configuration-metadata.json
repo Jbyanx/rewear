@@ -14,5 +14,15 @@
       "name": "user.table",
       "type": "java.lang.String",
       "description": "Description for user.table."
+    },
+    {
+      "name": "security.jwt.access-expiration-in-minutes",
+      "type": "java.lang.String",
+      "description": "Description for security.jwt.access-expiration-in-minutes."
+    },
+    {
+      "name": "security.jwt.refresh-expiration-in-minutes",
+      "type": "java.lang.String",
+      "description": "Description for security.jwt.refresh-expiration-in-minutes."
     }
   ] }
