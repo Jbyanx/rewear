@@ -4,6 +4,7 @@ import com.devops.backend.rewear.dtos.request.SaveUser;
 import com.devops.backend.rewear.dtos.response.GetUserProfile;
 import com.devops.backend.rewear.dtos.response.GetUser;
 import com.devops.backend.rewear.entities.User;
+import com.devops.backend.rewear.entities.enums.UserStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -16,5 +17,5 @@ public interface UserService {
     User getEntityByUsername(String username);
     GetUser getByEmail(String email);
     GetUser updateById(Long id, SaveUser saveUser);
-    GetUser desactivate(Long id);
+    GetUser updateStatus(Long userId, UserStatus userStatus);
 }
