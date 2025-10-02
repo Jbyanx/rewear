@@ -2,14 +2,12 @@ package com.devops.backend.rewear.controllers;
 
 import com.devops.backend.rewear.dtos.response.GetUser;
 import com.devops.backend.rewear.dtos.response.GetUserProfile;
+import com.devops.backend.rewear.entities.enums.UserStatus;
 import com.devops.backend.rewear.services.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -42,4 +40,12 @@ public class UserController {
         return ResponseEntity.ok(userService.getMyProfile());
     }
 
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<GetUser> updateStatus(
+            @PathVariable Long id,
+            @RequestParam UserStatus status
+    ) {
+        GetUser updatedUser = userService.updateStatus(id, status);
+        return ResponseEntity.ok(updatedUser);
+    }
 }
