@@ -1,9 +1,11 @@
 package com.devops.backend.rewear.controllers;
 
+import com.devops.backend.rewear.dtos.request.SaveUser;
 import com.devops.backend.rewear.dtos.response.GetUser;
 import com.devops.backend.rewear.dtos.response.GetUserProfile;
 import com.devops.backend.rewear.entities.enums.UserStatus;
 import com.devops.backend.rewear.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -47,5 +49,13 @@ public class UserController {
     ) {
         GetUser updatedUser = userService.updateStatus(id, status);
         return ResponseEntity.ok(updatedUser);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<GetUser> updateUser(
+            @PathVariable Long id,
+            @Valid @RequestBody SaveUser saveUser
+    ) {
+        return ResponseEntity.ok(userService.updateById(id, saveUser));
     }
 }
