@@ -4,6 +4,7 @@ import com.devops.backend.rewear.dtos.request.SaveUser;
 import com.devops.backend.rewear.dtos.response.GetUser;
 import com.devops.backend.rewear.dtos.response.GetUserProfile;
 import com.devops.backend.rewear.entities.User;
+import com.devops.backend.rewear.entities.enums.UserStatus;
 import com.devops.backend.rewear.exceptions.UserNotFoundException;
 import com.devops.backend.rewear.mappers.UserMapper;
 import com.devops.backend.rewear.repositories.UserRepository;
@@ -47,6 +48,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public GetUserProfile getMyProfile() {
+        //TODO solo propietarios
         return userMapper.toGetUserProfile(currentUserService.getAuthenticatedUser());
     }
 
@@ -73,6 +75,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public GetUser updateById(Long id, SaveUser saveUser) {
+        //TODO admins y propietarios
         if(!userRepository.existsById(id)) throw new UserNotFoundException("usuario con id "+id+" no encontrado en BDD");
         User oldUser = userRepository.getReferenceById(id);
 
@@ -93,13 +96,13 @@ public class UserServiceImpl implements UserService {
         return userMapper.toGetUser(userRepository.save(oldUser));
     }
 
+    @Transactional
     @Override
-    public GetUser desactivate(Long id) {
-        return userRepository.findById(id)
-                .map(u -> {
-                    u.setActive(false); //desactivar
-                    return userMapper.toGetUser(u);
-                })
+    public GetUser updateStatus(Long userId, UserStatus userStatus) {
+        //TODO solo desactiva el admin
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("Error al desactivar el usuario en BDD, no existe"));
+        user.setActive(userStatus.name().equals("ACTIVE"));
+        return userMapper.toGetUser(userRepository.save(user));
     }
 }
