@@ -39,16 +39,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         // 1. Extraer token del request (sin "Bearer ")
-        String token = jwtService.extractJwtFromRequest(request);
+        String accessToken = jwtService.extractJwtFromRequest(request);
+
 
         // 2. Si no hay token, continuar con el siguiente filtro
-        if (!StringUtils.hasText(token)) {
+        if (!StringUtils.hasText(accessToken)) {
             filterChain.doFilter(request, response);
             return;
         }
 
         // 3. Validar token (fecha de expiración + firma)
-        boolean isValid = validateToken(token);
+        boolean isValid = validateAccessToken(accessToken);
         if (!isValid) {
             filterChain.doFilter(request, response);
             return;
@@ -56,7 +57,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             // 4. Obtener el username desde el token
-            String username = jwtService.extractUsername(token);
+            String username = jwtService.extractUsername(accessToken);
 
             // 5. Cargar al usuario desde la DB
             UserDetails user = userDetailsService.loadUserByUsername(username);
@@ -86,13 +87,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
     }
 
-    private boolean validateToken(String token) {
+    private boolean validateAccessToken(String token) {
         if (!StringUtils.hasText(token)) {
             return false;
         }
 
         Date now = new Date(System.currentTimeMillis());
-        return jwtService.isValid(token, now);
+        return jwtService.isNotExpired(token, now);
     }
 
     private void sendErrorResponse(HttpServletResponse response,
