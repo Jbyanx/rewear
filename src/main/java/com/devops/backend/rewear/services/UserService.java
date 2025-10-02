@@ -8,7 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface UserService {
-    Page<GetUser>  getUsers(Pageable pageable);
+    Page<GetUser> getAllUsers(Pageable pageable);
+    Page<GetUser> getActiveUsers(Pageable pageable);
     GetUser getById(Long id);
     GetUserProfile getMyProfile();
     GetUser getByUsername(String username);
