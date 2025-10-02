@@ -6,24 +6,21 @@ import com.devops.backend.rewear.dtos.response.GetUserProfile;
 import com.devops.backend.rewear.dtos.response.LoginResponse;
 import com.devops.backend.rewear.entities.User;
 import com.devops.backend.rewear.entities.enums.Role;
-import com.devops.backend.rewear.exceptions.EmailAlreadyExistsException;
-import com.devops.backend.rewear.exceptions.InvalidPasswordException;
-import com.devops.backend.rewear.exceptions.UserNotFoundException;
-import com.devops.backend.rewear.exceptions.UsernameAlreadyExistsException;
+import com.devops.backend.rewear.exceptions.*;
 import com.devops.backend.rewear.mappers.UserMapper;
 import com.devops.backend.rewear.repositories.UserRepository;
+import com.devops.backend.rewear.services.UserService;
 import com.devops.backend.rewear.util.PasswordValidator;
 import jakarta.validation.Valid;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,13 +31,15 @@ public class AuthService {
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final UserService userService;
 
-    public AuthService(UserMapper userMapper, PasswordEncoder passwordEncoder, PasswordEncoder passwordEncoder1, UserRepository userRepository, AuthenticationManager authenticationManager, JwtService jwtService) {
+    public AuthService(UserMapper userMapper, PasswordEncoder passwordEncoder, PasswordEncoder passwordEncoder1, UserRepository userRepository, AuthenticationManager authenticationManager, JwtService jwtService, UserService userService) {
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder1;
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
+        this.userService = userService;
     }
 
     @Transactional
@@ -68,6 +67,7 @@ public class AuthService {
         user.setRole(Role.USER);
         user.setRating(BigDecimal.valueOf(0.0));
         user.setTotalRatings(0);
+        user.setActive(true);
 
         // ✅ Guardar directamente
         User savedUser = userRepository.save(user);
@@ -82,14 +82,37 @@ public class AuthService {
         authenticationManager.authenticate(authentication);
 
         User user = userRepository.getReferenceByUsername(loginRequest.username())
-                .orElseThrow(() -> new UserNotFoundException("El usuario "+ loginRequest.username()+ " no existe en BDD"));
+                .orElseThrow(() -> new UserNotFoundException("El usuario " + loginRequest.username() + " no existe en BDD"));
 
-        String jwt = jwtService.generateToken(user, generateExtraClaims(user));
+        Map<String, Object> claims = generateExtraClaims(user);
+
+        String accessToken = jwtService.generateAccessToken(user, claims);
+        String refreshToken = jwtService.generateRefreshToken(user, claims);
 
         GetUserProfile userProfile = userMapper.toGetUserProfile(user);
         return new LoginResponse(
-                jwt,
+                accessToken,
+                refreshToken,
                 userProfile
+        );
+    }
+
+    public LoginResponse refreshToken(String refreshToken) {
+        Date now = new Date();
+
+        if (!jwtService.isNotExpired(refreshToken, now)) {
+            throw new InvalidTokenException("El refresh token ha expirado");
+        }
+
+        String username = jwtService.extractUsername(refreshToken);
+        User entity = userService.getEntityByUsername(username);
+
+        String newAccessToken = jwtService.generateAccessToken(entity, generateExtraClaims(entity));
+
+        return new LoginResponse(
+                newAccessToken,
+                refreshToken,
+                userMapper.toGetUserProfile(entity)
         );
     }
 
