@@ -56,7 +56,7 @@ public class Wear {
     private WearCategory category; //SHIRT, PANTS, SHOES, ACCESSORY
 
     @NotBlank
-    @Size(min = 4, max = 100, message = "La marca de la prenda debe tener entre {min} y {max} caracteres")
+    @Size(min = 2, max = 100, message = "La marca de la prenda debe tener entre {min} y {max} caracteres")
     @Column(nullable = false, length = 100)
     private String brand;
 
