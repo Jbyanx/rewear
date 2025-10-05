@@ -1,11 +1,9 @@
 package com.devops.backend.rewear.dtos.response;
 
-import com.devops.backend.rewear.entities.enums.DocumentType;
 import com.devops.backend.rewear.entities.enums.Genre;
 
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
 
 public record GetUser(
         Long id,
@@ -17,6 +15,8 @@ public record GetUser(
         Genre genre,
         String profileImageUrl,
         Double rating,
-        Integer totalRatings
+        Integer totalRatings,
+        //List<GetExchange> confirmedExchanges,
+        List<GetWear> availableWears
 ) implements Serializable {
 }
