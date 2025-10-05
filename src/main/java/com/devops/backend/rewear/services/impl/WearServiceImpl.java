@@ -1,6 +1,7 @@
 package com.devops.backend.rewear.services.impl;
 
 import com.devops.backend.rewear.dtos.request.SaveWear;
+import com.devops.backend.rewear.dtos.request.WearFilter;
 import com.devops.backend.rewear.dtos.response.GetWear;
 import com.devops.backend.rewear.entities.User;
 import com.devops.backend.rewear.entities.Wear;
@@ -11,6 +12,7 @@ import com.devops.backend.rewear.exceptions.WearNotFoundException;
 import com.devops.backend.rewear.mappers.WearMapper;
 import com.devops.backend.rewear.repositories.WearRepository;
 import com.devops.backend.rewear.services.WearService;
+import com.devops.backend.rewear.specification.WearSpecification;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
@@ -52,8 +54,8 @@ public class WearServiceImpl implements WearService {
     }
 
     @Override
-    public List<GetWear> getAvailableWears() {
-        return wearRepository.getWearsByActiveTrueAndStatus(WearStatus.AVAILABLE)
+    public List<GetWear> getAvailableWears(WearFilter filter) {
+        return wearRepository.findAll(WearSpecification.byFilter(filter))
                 .stream()
                 .map(wearMapper::toGetWear)
                 .collect(Collectors.toList());
