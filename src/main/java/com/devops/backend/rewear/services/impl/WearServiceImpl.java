@@ -46,6 +46,7 @@ public class WearServiceImpl implements WearService {
                 .material(saveWear.material())
                 .imageUrl(saveWear.imageUrl())
                 .owner(principal)
+                .active(true)
                 .build();
         return wearMapper.toGetWear(wearRepository.save(wear));
     }
