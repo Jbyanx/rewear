@@ -26,7 +26,7 @@ public record SaveWear(
         WearCategory category, //SHIRT, PANTS, SHOES, ACCESSORY
 
         @NotBlank
-        @Size(min = 4, max = 100, message = "La marca de la prenda debe tener entre {min} y {max} caracteres")
+        @Size(min = 2, max = 100, message = "La marca de la prenda debe tener entre {min} y {max} caracteres")
         String brand,
 
         @NotBlank
