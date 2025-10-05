@@ -6,6 +6,7 @@ import com.devops.backend.rewear.entities.enums.Genre;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record GetUserProfile(
         Long id,
@@ -25,6 +26,8 @@ public record GetUserProfile(
         Double rating,
         Integer totalRatings,
         LocalDateTime createdAt,
-        String role
+        String role,
+        List<GetWear> wears
+        //lista de intercambios
 ) implements Serializable {
 }
