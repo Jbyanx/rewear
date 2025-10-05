@@ -6,11 +6,11 @@ import com.devops.backend.rewear.dtos.response.GetUserProfile;
 import com.devops.backend.rewear.entities.enums.UserStatus;
 import com.devops.backend.rewear.services.UserService;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -22,16 +22,14 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<GetUser>> getActiveUsers(Pageable pageable) {
-        Page<GetUser> getUserPage = userService.getActiveUsers(pageable);
-        return ResponseEntity.ok(getUserPage);
+    public ResponseEntity<List<GetUser>> getActiveUsers() {
+        return ResponseEntity.ok(userService.getActiveUsers());
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/all")
-    public ResponseEntity<Page<GetUser>> getAllUsers(Pageable pageable) {
-        Page<GetUser> getUserPage = userService.getAllUsers(pageable);
-        return ResponseEntity.ok(getUserPage);
+    public ResponseEntity<List<GetUser>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @GetMapping("/{id}")
