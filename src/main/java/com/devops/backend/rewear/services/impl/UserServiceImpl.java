@@ -13,7 +13,6 @@ import com.devops.backend.rewear.exceptions.UsernameAlreadyExistsException;
 import com.devops.backend.rewear.mappers.UserMapper;
 import com.devops.backend.rewear.repositories.UserRepository;
 import com.devops.backend.rewear.services.UserService;
-import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -53,7 +52,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public GetUserProfile getMyProfile() {
-        return userMapper.toGetUserProfile(currentUserService.getAuthenticatedUser());
+        User authenticatedUser = currentUserService.getAuthenticatedUser(); // ussuario del contexto de seguridad
+
+        //usuario del contexto de hibernate
+        User user = userRepository.findById(authenticatedUser.getId())
+                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado en BDD"));
+
+        int size = user.getWears().size(); //cargamos los wears para evitar lazy loading
+        return userMapper.toGetUserProfile(user);
     }
 
     @Override
