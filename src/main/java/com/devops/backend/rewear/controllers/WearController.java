@@ -1,8 +1,9 @@
 package com.devops.backend.rewear.controllers;
 
 import com.devops.backend.rewear.dtos.request.SaveWear;
+import com.devops.backend.rewear.dtos.request.WearFilter;
 import com.devops.backend.rewear.dtos.response.GetWear;
-import com.devops.backend.rewear.entities.enums.WearStatus;
+import com.devops.backend.rewear.entities.enums.*;
 import com.devops.backend.rewear.services.WearService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,18 @@ public class WearController {
     }
 
     @GetMapping //vista inicial
-    ResponseEntity<List<GetWear>> getAvailableWears(){
-        return ResponseEntity.ok(wearService.getAvailableWears());
+    ResponseEntity<List<GetWear>> getAvailableWears(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) WearCategory category,
+            @RequestParam(required = false) Genre genre,
+            @RequestParam(required = false) String color,
+            @RequestParam(required = false) WearSize size,
+            @RequestParam(required = false) WearCondition condition,
+            @RequestParam(required = false) String brand,
+            @RequestParam(required = false) String material
+    ) {
+        WearFilter filter = new WearFilter(name, category, genre, color, size, condition, brand, material);
+        return ResponseEntity.ok(wearService.getAvailableWears(filter));
     }
 
     @PostMapping //el owner es automaticamente el principal

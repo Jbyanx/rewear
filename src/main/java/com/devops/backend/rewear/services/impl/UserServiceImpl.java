@@ -13,10 +13,10 @@ import com.devops.backend.rewear.exceptions.UsernameAlreadyExistsException;
 import com.devops.backend.rewear.mappers.UserMapper;
 import com.devops.backend.rewear.repositories.UserRepository;
 import com.devops.backend.rewear.services.UserService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -31,15 +31,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<GetUser> getActiveUsers(Pageable pageable) {
-        return userRepository.findByIsActiveTrue(pageable)
-                .map(userMapper::toGetUser);
+    public List<GetUser> getActiveUsers() {
+        return userRepository.findByIsActiveTrue()
+                .stream()
+                .map(userMapper::toGetUser).toList();
     }
 
     @Override
-    public Page<GetUser> getAllUsers(Pageable pageable) {
-        return userRepository.findAll(pageable)
-                .map(userMapper::toGetUser);
+    public List<GetUser> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::toGetUser).toList();
     }
 
     @Override
