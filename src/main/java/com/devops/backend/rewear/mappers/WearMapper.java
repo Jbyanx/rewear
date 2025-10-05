@@ -20,8 +20,8 @@ public interface WearMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "deletedAt", ignore = true)
-    @Mapping(target = "owner", source = "owner")
-    Wear toWear(SaveWear saveWear, User owner);
+    @Mapping(target = "owner", ignore = true)
+    Wear toWear(SaveWear saveWear);
 
     /**
      * Convierte una entidad Wear a su DTO GetWear.
