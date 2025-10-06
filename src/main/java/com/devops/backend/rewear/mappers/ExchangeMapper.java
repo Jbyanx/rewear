@@ -12,7 +12,7 @@ import org.mapstruct.Named;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {UserMapper.class, WearMapper.class})
+@Mapper(componentModel = "spring", uses = {UserMapper.class, WearMapper.class, ReviewMapper.class})
 public interface ExchangeMapper {
 
     // ====== SaveExchange → Exchange ======
@@ -33,7 +33,7 @@ public interface ExchangeMapper {
     @Mapping(target = "owner", source = "owner", qualifiedByName = "toGetSimpleUser")
     @Mapping(target = "offeredWear", source = "offeredWear", qualifiedByName = "toGetWear")
     @Mapping(target = "requestedWear", source = "requestedWear", qualifiedByName = "toGetWear")
-    @Mapping(target = "reviews", ignore = true) // se mapeará cuando tengas la entidad Review
+    @Mapping(target = "reviews", source = "reviews") //en source es entidad y en target es dto
     GetExchange toGetExchange(Exchange entity);
 
     List<GetExchange> toGetExchangeList(List<Exchange> entities);
