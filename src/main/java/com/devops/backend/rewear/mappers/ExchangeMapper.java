@@ -5,15 +5,19 @@ import com.devops.backend.rewear.dtos.response.GetExchange;
 import com.devops.backend.rewear.entities.Exchange;
 import com.devops.backend.rewear.entities.User;
 import com.devops.backend.rewear.entities.Wear;
-import org.mapstruct.*;
+import com.devops.backend.rewear.entities.enums.ExchangeStatus;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {UserMapper.class, WearMapper.class})
 public interface ExchangeMapper {
 
-    // ======SaveExchange → Exchange ======
+    // ====== SaveExchange → Exchange ======
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "status", expression = "java(com.devops.backend.rewear.entities.enums.ExchangeStatus.PENDING)")
+    @Mapping(target = "status", expression = "java(ExchangeStatus.PENDING)")
     @Mapping(target = "requesterConfirmed", constant = "false")
     @Mapping(target = "ownerConfirmed", constant = "false")
     @Mapping(target = "createdAt", ignore = true)
@@ -25,16 +29,16 @@ public interface ExchangeMapper {
     Exchange toExchange(SaveExchange dto);
 
     // ====== Exchange → GetExchange ======
-    @Mapping(target = "requesterId", source = "requester.id")
-    @Mapping(target = "ownerId", source = "owner.id")
-    @Mapping(target = "offeredWearId", source = "offeredWear.id")
-    @Mapping(target = "requestedWearId", source = "requestedWear.id")
-    @Mapping(target = "reviews", ignore = true) // se puede mapear luego
+    @Mapping(target = "requester", source = "requester", qualifiedByName = "toGetSimpleUser")
+    @Mapping(target = "owner", source = "owner", qualifiedByName = "toGetSimpleUser")
+    @Mapping(target = "offeredWear", source = "offeredWear", qualifiedByName = "toGetWear")
+    @Mapping(target = "requestedWear", source = "requestedWear", qualifiedByName = "toGetWear")
+    @Mapping(target = "reviews", ignore = true) // se mapeará cuando tengas la entidad Review
     GetExchange toGetExchange(Exchange entity);
 
-    List<GetExchange> toGetDtoList(List<Exchange> exchanges);
+    List<GetExchange> toGetExchangeList(List<Exchange> entities);
 
-    // ====== 3️⃣ Helpers ======
+    // ====== Métodos auxiliares ======
     @Named("wearFromId")
     default Wear wearFromId(Long id) {
         if (id == null) return null;
@@ -51,4 +55,3 @@ public interface ExchangeMapper {
         return user;
     }
 }
-

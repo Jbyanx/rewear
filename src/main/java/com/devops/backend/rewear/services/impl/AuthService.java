@@ -62,7 +62,7 @@ public class AuthService {
         }
 
         // ✅ Mapear una sola vez y configurar todo
-        User user = userMapper.toEntity(saveUser);
+        User user = userMapper.toUser(saveUser);
         user.setPassword(passwordEncoder.encode(password));
         user.setRole(Role.USER);
         user.setRating(BigDecimal.valueOf(0.0));

@@ -27,7 +27,7 @@ public record GetUserProfile(
         Integer totalRatings,
         LocalDateTime createdAt,
         String role,
-        List<GetWear> wears
-        //lista de intercambios
+        List<GetWear> wears,
+        List<GetExchange> exchanges
 ) implements Serializable {
 }
