@@ -1,8 +1,6 @@
 package com.devops.backend.rewear.repositories;
 
 import com.devops.backend.rewear.entities.User;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

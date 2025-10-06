@@ -127,6 +127,15 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Wear> wears = new ArrayList<>();
 
+    //intercambios solicitados por el usuario
+    @OneToMany(mappedBy = "requester", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Exchange> requestedExchanges = new ArrayList<>();
+
+    //intercambios solicitados al usuario
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Exchange> ownedExchanges = new ArrayList<>();
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // Evita NullPointerException si el usuario no tiene rol asignado
