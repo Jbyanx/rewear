@@ -8,10 +8,12 @@ import java.util.List;
 
 public record GetExchange(
     Long id,
-    Long requesterId,
-    Long ownerId,
-    Long offeredWearId,
-    Long requestedWearId,
+    GetSimpleUser requester,
+    GetSimpleUser owner,
+    GetWear offeredWear,
+    GetWear requestedWear,
+    boolean requesterConfirmed,
+    boolean ownerConfirmed,
     ExchangeStatus status,
     LocalDateTime createdAt,
     LocalDateTime updatedAt,

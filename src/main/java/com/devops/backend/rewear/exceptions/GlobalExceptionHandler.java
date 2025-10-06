@@ -83,7 +83,7 @@ public class GlobalExceptionHandler {
         return buildResponse(new RuntimeException(message), HttpStatus.BAD_REQUEST, request);
     }
 
-    // 🔹 Tipo de argumento incorrecto (por ejemplo /users/abc donde se espera un Long)
+    // 🔹 Tipo de argumento incorrecto
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ApiErrorResponse> handleTypeMismatch(
             MethodArgumentTypeMismatchException ex, HttpServletRequest request
@@ -135,6 +135,42 @@ public class GlobalExceptionHandler {
         return buildResponse(new RuntimeException("Ruta no encontrada."), HttpStatus.NOT_FOUND, request);
     }
 
+    // ==========================
+    // 🔸 NUEVAS EXCEPCIONES
+    // ==========================
+
+    // 🔹 Intercambio no encontrado
+    @ExceptionHandler(ExchangeNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleExchangeNotFound(
+            ExchangeNotFoundException ex, HttpServletRequest request
+    ) {
+        return buildResponse(ex, HttpStatus.NOT_FOUND, request);
+    }
+
+    // 🔹 Intercambio inválido (por estado o usuario incorrecto)
+    @ExceptionHandler(InvalidExchangeException.class)
+    public ResponseEntity<ApiErrorResponse> handleInvalidExchange(
+            InvalidExchangeException ex, HttpServletRequest request
+    ) {
+        return buildResponse(ex, HttpStatus.BAD_REQUEST, request);
+    }
+
+    // 🔹 Contraseña incorrecta
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<ApiErrorResponse> handleInvalidPassword(
+            InvalidPasswordException ex, HttpServletRequest request
+    ) {
+        return buildResponse(ex, HttpStatus.UNAUTHORIZED, request);
+    }
+
+    // 🔹 Token inválido o expirado
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<ApiErrorResponse> handleInvalidToken(
+            InvalidTokenException ex, HttpServletRequest request
+    ) {
+        return buildResponse(ex, HttpStatus.UNAUTHORIZED, request);
+    }
+
     // 🔹 Error genérico (última barrera)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleGenericException(
@@ -147,6 +183,26 @@ public class GlobalExceptionHandler {
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 request
         );
+    }
+
+    // 🔹 Token JWT expirado o inválido (biblioteca io.jsonwebtoken)
+    @ExceptionHandler(io.jsonwebtoken.JwtException.class)
+    public ResponseEntity<ApiErrorResponse> handleJwtExceptions(
+            io.jsonwebtoken.JwtException ex, HttpServletRequest request
+    ) {
+        String message;
+
+        if (ex instanceof io.jsonwebtoken.ExpiredJwtException) {
+            message = "El token JWT ha expirado. Por favor, inicie sesión nuevamente.";
+        } else if (ex instanceof io.jsonwebtoken.MalformedJwtException) {
+            message = "El token JWT tiene un formato inválido.";
+        } else if (ex instanceof io.jsonwebtoken.SignatureException) {
+            message = "Firma del token JWT inválida.";
+        } else {
+            message = "Token JWT inválido o no reconocido.";
+        }
+
+        return buildResponse(new RuntimeException(message), HttpStatus.UNAUTHORIZED, request);
     }
 
     // 🧩 Método auxiliar

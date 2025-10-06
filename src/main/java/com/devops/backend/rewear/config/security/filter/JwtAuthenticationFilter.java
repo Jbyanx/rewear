@@ -2,6 +2,8 @@ package com.devops.backend.rewear.config.security.filter;
 
 import com.devops.backend.rewear.services.impl.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,12 +21,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -35,65 +37,59 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
             throws ServletException, IOException {
 
-        // 1. Extraer token del request (sin "Bearer ")
+        // 1) Extraer token (puede devolver null o cadena vacía)
         String accessToken = jwtService.extractJwtFromRequest(request);
 
-
-        // 2. Si no hay token, continuar con el siguiente filtro
+        // 2) Si no hay token, continuar normalmente
         if (!StringUtils.hasText(accessToken)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // 3. Validar token (fecha de expiración + firma)
-        boolean isValid = validateAccessToken(accessToken);
-        if (!isValid) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         try {
-            // 4. Obtener el username desde el token
+            // 3) Intentamos procesar el token (cualquier excepción JWT se atrapará aquí)
+            // Extraemos el username (puede lanzar ExpiredJwtException u otras JwtException)
             String username = jwtService.extractUsername(accessToken);
 
-            // 5. Cargar al usuario desde la DB
+            // Cargamos el usuario desde la DB
             UserDetails user = userDetailsService.loadUserByUsername(username);
 
-            // 6. Crear Authentication y meterlo en el contexto
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    user, null, user.getAuthorities());
-            authToken.setDetails(new WebAuthenticationDetails(request));
+            // Si no hay autenticación previa, seteamos el contexto
+            if (SecurityContextHolder.getContext().getAuthentication() == null) {
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                authToken.setDetails(new WebAuthenticationDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
 
-            SecurityContextHolder.getContext().setAuthentication(authToken);
-
-            // 7. Continuar con el resto de filtros
+            // 4) Continuar con la cadena de filtros
             filterChain.doFilter(request, response);
 
-        } catch (io.jsonwebtoken.ExpiredJwtException ex) {
+        } catch (ExpiredJwtException ex) {
+            // Token expirado -> 401
             sendErrorResponse(response, HttpStatus.UNAUTHORIZED, "Token expirado",
                     "El token JWT ha expirado. Por favor, inicia sesión nuevamente.");
-        } catch (io.jsonwebtoken.JwtException ex) {
+            return;
+        } catch (JwtException ex) {
+            // Otros errores de JWT (firma inválida, formato, etc.) -> 401
             sendErrorResponse(response, HttpStatus.UNAUTHORIZED, "Token inválido",
                     "El token JWT es inválido o está malformado.");
+            return;
         } catch (UsernameNotFoundException ex) {
+            // Usuario no existe -> 401
             sendErrorResponse(response, HttpStatus.UNAUTHORIZED, "Usuario no encontrado",
                     "El usuario asociado al token no existe.");
+            return;
         } catch (Exception ex) {
+            // Error inesperado -> 500
             sendErrorResponse(response, HttpStatus.INTERNAL_SERVER_ERROR, "Error interno",
                     "Error procesando la autenticación.");
         }
-    }
-
-    private boolean validateAccessToken(String token) {
-        if (!StringUtils.hasText(token)) {
-            return false;
-        }
-
-        Date now = new Date(System.currentTimeMillis());
-        return jwtService.isNotExpired(token, now);
     }
 
     private void sendErrorResponse(HttpServletResponse response,

@@ -3,6 +3,7 @@ package com.devops.backend.rewear.controllers;
 import com.devops.backend.rewear.dtos.request.SaveExchange;
 import com.devops.backend.rewear.dtos.response.GetExchange;
 import com.devops.backend.rewear.services.ExchangeService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -18,14 +19,14 @@ public class ExchangeController {
         this.exchangeService = exchangeService;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/all")
     public ResponseEntity<List<GetExchange>> getAllExchanges(){
         return ResponseEntity.ok(exchangeService.getAllExchanges());
     }
 
     @PostMapping
-    ResponseEntity<GetExchange> saveExchange(SaveExchange saveExchange){
+    ResponseEntity<GetExchange> saveExchange(@Valid @RequestBody SaveExchange saveExchange){
         return ResponseEntity.ok().body(exchangeService.save(saveExchange));
     }
 

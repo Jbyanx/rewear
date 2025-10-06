@@ -3,9 +3,8 @@ package com.devops.backend.rewear.dtos.response;
 import com.devops.backend.rewear.entities.enums.Genre;
 
 import java.io.Serializable;
-import java.util.List;
 
-public record GetUser(
+public record GetSimpleUser(
         Long id,
         String firstName,
         String lastName,
@@ -15,8 +14,6 @@ public record GetUser(
         Genre genre,
         String profileImageUrl,
         Double rating,
-        Integer totalRatings,
-        List<GetExchange> confirmedExchanges,
-        List<GetWear> availableWears
+        Integer totalRatings
 ) implements Serializable {
 }
