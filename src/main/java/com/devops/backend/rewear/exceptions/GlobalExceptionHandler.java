@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.stream.Collectors;
 
@@ -167,6 +168,21 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidTokenException.class)
     public ResponseEntity<ApiErrorResponse> handleInvalidToken(
             InvalidTokenException ex, HttpServletRequest request
+    ) {
+        return buildResponse(ex, HttpStatus.UNAUTHORIZED, request);
+    }
+
+    // 🔹 Recurso no encontrado
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleNoResourceFound(
+            NoResourceFoundException ex, HttpServletRequest request
+    ) {
+        return buildResponse(ex, HttpStatus.UNAUTHORIZED, request);
+    }
+    // 🔹 Review no completada
+    @ExceptionHandler(InvalidReviewException.class)
+    public ResponseEntity<ApiErrorResponse> handleInvalidReview(
+            InvalidReviewException ex, HttpServletRequest request
     ) {
         return buildResponse(ex, HttpStatus.UNAUTHORIZED, request);
     }
