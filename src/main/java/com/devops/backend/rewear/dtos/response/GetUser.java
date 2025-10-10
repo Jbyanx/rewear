@@ -16,7 +16,7 @@ public record GetUser(
         String profileImageUrl,
         Double rating,
         Integer totalRatings,
-        List<GetExchange> confirmedExchanges,
-        List<GetWear> availableWears
+        List<GetExchange> exchanges, //confirmed
+        List<GetWear> wears //available
 ) implements Serializable {
 }

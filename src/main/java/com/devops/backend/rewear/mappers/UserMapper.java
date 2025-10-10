@@ -29,11 +29,14 @@ public abstract class UserMapper {
     public abstract User toUser(SaveUser dto);
 
     @Mapping(target = "wears", source = "wears")
-    @Mapping(target = "exchanges", expression = "java(mapAllExchanges(entity))")
+    //@Mapping(target = "exchanges", expression = "java(mapAllExchanges(entity))")
+    @Mapping(target = "exchanges", source = "requestedExchanges")
     public abstract GetUserProfile toGetUserProfile(User entity);
 
-    @Mapping(target = "availableWears", expression = "java(mapAvailableWears(entity))")
-    @Mapping(target = "confirmedExchanges", expression = "java(mapConfirmedExchanges(entity))")
+    //@Mapping(target = "availableWears", expression = "java(mapAvailableWears(entity))")
+    @Mapping(target = "wears", source = "wears")
+    //@Mapping(target = "confirmedExchanges", expression = "java(mapConfirmedExchanges(entity))")
+    @Mapping(target = "exchanges", source = "requestedExchanges")
     public abstract GetUser toGetUser(User entity);
 
     @Named("toGetSimpleUser")

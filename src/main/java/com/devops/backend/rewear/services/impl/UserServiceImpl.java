@@ -31,22 +31,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<GetUser> getActiveUsers() {
+    public List<GetUserProfile> getActiveUsers() {
         return userRepository.findByIsActiveTrue()
                 .stream()
-                .map(userMapper::toGetUser).toList();
+                .map(userMapper::toGetUserProfile).toList();
     }
 
     @Override
-    public List<GetUser> getAllUsers() {
+    public List<GetUserProfile> getAllUsers() {
         return userRepository.findAll()
                 .stream()
-                .map(userMapper::toGetUser).toList();
+                .map(userMapper::toGetUserProfile).toList();
     }
 
     @Override
-    public GetUser getById(Long id) {
-        return userMapper.toGetUser(
+    public GetUserProfile getById(Long id) {
+        return userMapper.toGetUserProfile(
                 userRepository.findById(id)
                         .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado en BDD"))
         );
@@ -65,9 +65,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public GetUser getByUsername(String username) {
+    public GetUserProfile getByUsername(String username) {
         return userRepository.findByUsername(username)
-                .map(userMapper::toGetUser)
+                .map(userMapper::toGetUserProfile)
                 .orElseThrow(() -> new  UserNotFoundException("Usuario con username "+username+" no encontrado en BDD"));
     }
 
@@ -78,15 +78,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public GetUser getByEmail(String email) {
+    public GetUserProfile getByEmail(String email) {
         return userRepository.findByEmail(email)
-                .map(userMapper::toGetUser)
+                .map(userMapper::toGetUserProfile)
                 .orElseThrow(() -> new UserNotFoundException("usuario con email "+email+" no existe"));
     }
 
     @Transactional
     @Override
-    public GetUser updateById(Long id, SaveUser saveUser) {
+    public GetUserProfile updateById(Long id, SaveUser saveUser) {
         User currentUser = currentUserService.getAuthenticatedUser();
 
         if(!userRepository.existsById(id)) throw new UserNotFoundException("usuario con id "+id+" no encontrado en BDD");
@@ -121,12 +121,12 @@ public class UserServiceImpl implements UserService {
         if (saveUser.documentNumber() != null) oldUser.setDocumentNumber(saveUser.documentNumber());
         if (saveUser.profileImageUrl() != null) oldUser.setProfileImageUrl(saveUser.profileImageUrl());
 
-        return userMapper.toGetUser(userRepository.save(oldUser));
+        return userMapper.toGetUserProfile(userRepository.save(oldUser));
     }
 
     @Transactional
     @Override
-    public GetUser updateStatus(Long userId, UserStatus userStatus) {
+    public GetUserProfile updateStatus(Long userId, UserStatus userStatus) {
         User currentUser = currentUserService.getAuthenticatedUser();
 
         boolean isAdmin = currentUser.getRole().equals(Role.ADMIN);
@@ -148,7 +148,7 @@ public class UserServiceImpl implements UserService {
             throw new PermissionDeniedException("No tienes permisos para esta acción");
         }
 
-        return userMapper.toGetUser(userRepository.save(user));
+        return userMapper.toGetUserProfile(userRepository.save(user));
     }
 
 }

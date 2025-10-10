@@ -22,18 +22,18 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GetUser>> getActiveUsers() {
+    public ResponseEntity<List<GetUserProfile>> getActiveUsers() {
         return ResponseEntity.ok(userService.getActiveUsers());
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/all")
-    public ResponseEntity<List<GetUser>> getAllUsers() {
+    public ResponseEntity<List<GetUserProfile>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GetUser> getUser(@PathVariable Long id) {
+    public ResponseEntity<GetUserProfile> getUser(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getById(id));
     }
 
@@ -43,16 +43,16 @@ public class UserController {
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<GetUser> updateStatus(
+    public ResponseEntity<GetUserProfile> updateStatus(
             @PathVariable Long id,
             @RequestParam UserStatus status
     ) {
-        GetUser updatedUser = userService.updateStatus(id, status);
+        GetUserProfile updatedUser = userService.updateStatus(id, status);
         return ResponseEntity.ok(updatedUser);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<GetUser> updateUser(
+    public ResponseEntity<GetUserProfile> updateUser(
             @PathVariable Long id,
             @Valid @RequestBody SaveUser saveUser
     ) {

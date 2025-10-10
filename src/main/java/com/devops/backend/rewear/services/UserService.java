@@ -9,13 +9,13 @@ import com.devops.backend.rewear.entities.enums.UserStatus;
 import java.util.List;
 
 public interface UserService {
-    List<GetUser> getAllUsers();
-    List<GetUser> getActiveUsers();
-    GetUser getById(Long id);
+    List<GetUserProfile> getAllUsers();
+    List<GetUserProfile> getActiveUsers();
+    GetUserProfile getById(Long id);
     GetUserProfile getMyProfile();
-    GetUser getByUsername(String username);
+    GetUserProfile getByUsername(String username);
     User getEntityByUsername(String username);
-    GetUser getByEmail(String email);
-    GetUser updateById(Long id, SaveUser saveUser);
-    GetUser updateStatus(Long userId, UserStatus userStatus);
+    GetUserProfile getByEmail(String email);
+    GetUserProfile updateById(Long id, SaveUser saveUser);
+    GetUserProfile updateStatus(Long userId, UserStatus userStatus);
 }
