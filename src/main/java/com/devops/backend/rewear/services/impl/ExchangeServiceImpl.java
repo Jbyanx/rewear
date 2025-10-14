@@ -156,4 +156,11 @@ public class ExchangeServiceImpl implements ExchangeService {
         return exchangeRepository.findAll().stream().map(exchangeMapper::toGetExchange).collect(Collectors.toList());
     }
 
+    @Override
+    public GetExchange getById(Long id) {
+        return exchangeRepository.findById(id)
+                .map(exchangeMapper::toGetExchange)
+                .orElseThrow(() -> new ExchangeNotFoundException("Exchange id: "+id+" not found"));
+    }
+
 }

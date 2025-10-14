@@ -19,6 +19,11 @@ public class ExchangeController {
         this.exchangeService = exchangeService;
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<GetExchange> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(exchangeService.getById(id));
+    }
+
     //@PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/all")
     public ResponseEntity<List<GetExchange>> getAllExchanges(){

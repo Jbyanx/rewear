@@ -13,8 +13,10 @@ import com.devops.backend.rewear.services.UserService;
 import com.devops.backend.rewear.util.PasswordValidator;
 import jakarta.validation.Valid;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,9 +81,13 @@ public class AuthService {
                 loginRequest.username(),
                 loginRequest.password()
         );
-        authenticationManager.authenticate(authentication);
+        try{
+            authenticationManager.authenticate(authentication);
+        } catch (AuthenticationException e) {
+            throw new BadCredentialsException("Credenciales inválidas");
+        }
 
-        User user = userRepository.getReferenceByUsername(loginRequest.username())
+        User user = userRepository.findByUsername(loginRequest.username())
                 .orElseThrow(() -> new UserNotFoundException("El usuario " + loginRequest.username() + " no existe en BDD"));
 
         Map<String, Object> claims = generateExtraClaims(user);

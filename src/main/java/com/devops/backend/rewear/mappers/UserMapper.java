@@ -32,8 +32,8 @@ public abstract class UserMapper {
     @Mapping(target = "exchanges", expression = "java(mapAllExchanges(entity))")
     public abstract GetUserProfile toGetUserProfile(User entity);
 
-    @Mapping(target = "availableWears", expression = "java(mapAvailableWears(entity))")
-    @Mapping(target = "confirmedExchanges", expression = "java(mapConfirmedExchanges(entity))")
+    @Mapping(target = "wears", source = "wears")
+    @Mapping(target = "exchanges", expression = "java(mapConfirmedExchanges(entity))")
     public abstract GetUser toGetUser(User entity);
 
     @Named("toGetSimpleUser")

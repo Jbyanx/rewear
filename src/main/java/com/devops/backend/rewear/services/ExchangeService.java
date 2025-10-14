@@ -17,4 +17,6 @@ public interface ExchangeService {
     GetExchange cancelExchange(Long id);
 
     List<GetExchange> getAllExchanges();
+
+    GetExchange getById(Long id);
 }

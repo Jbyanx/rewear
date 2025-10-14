@@ -9,7 +9,9 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = {
+       UserMapper.class
+})
 public interface WearMapper {
 
     /**
@@ -28,7 +30,7 @@ public interface WearMapper {
      * Convierte una entidad Wear a su DTO GetWear.
      * Solo se expone el id del owner, no todo el objeto User.
      */
-    @Mapping(target = "ownerId", source = "owner.id")
+    @Mapping(target = "owner", source = "owner")
     @Named("toGetWear")
     GetWear toGetWear(Wear entity);
 
