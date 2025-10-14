@@ -14,7 +14,6 @@ import com.devops.backend.rewear.mappers.WearMapper;
 import com.devops.backend.rewear.repositories.WearRepository;
 import com.devops.backend.rewear.services.WearService;
 import com.devops.backend.rewear.specification.WearSpecification;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

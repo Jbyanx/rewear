@@ -2,8 +2,9 @@ package com.devops.backend.rewear.specification;
 
 import com.devops.backend.rewear.dtos.request.WearFilter;
 import com.devops.backend.rewear.entities.Wear;
-import org.springframework.data.jpa.domain.Specification;
 import jakarta.persistence.criteria.Predicate;
+import org.springframework.data.jpa.domain.Specification;
+
 import java.util.ArrayList;
 import java.util.List;
 

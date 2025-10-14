@@ -1,8 +1,6 @@
 package com.devops.backend.rewear.controllers;
 
-import com.devops.backend.rewear.dtos.request.SaveUser;
 import com.devops.backend.rewear.dtos.request.UpdateUser;
-import com.devops.backend.rewear.dtos.response.GetUser;
 import com.devops.backend.rewear.dtos.response.GetUserProfile;
 import com.devops.backend.rewear.entities.enums.UserStatus;
 import com.devops.backend.rewear.services.UserService;

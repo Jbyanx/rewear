@@ -4,7 +4,6 @@ import com.devops.backend.rewear.dtos.request.SaveWear;
 import com.devops.backend.rewear.dtos.request.UpdateWear;
 import com.devops.backend.rewear.dtos.request.WearFilter;
 import com.devops.backend.rewear.dtos.response.GetWear;
-import com.devops.backend.rewear.entities.enums.WearStatus;
 import jakarta.validation.Valid;
 
 import java.util.List;

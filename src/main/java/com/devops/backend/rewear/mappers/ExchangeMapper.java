@@ -5,7 +5,6 @@ import com.devops.backend.rewear.dtos.response.GetExchange;
 import com.devops.backend.rewear.entities.Exchange;
 import com.devops.backend.rewear.entities.User;
 import com.devops.backend.rewear.entities.Wear;
-import com.devops.backend.rewear.entities.enums.ExchangeStatus;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
