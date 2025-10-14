@@ -2,7 +2,6 @@ package com.devops.backend.rewear.mappers;
 
 import com.devops.backend.rewear.dtos.request.SaveWear;
 import com.devops.backend.rewear.dtos.response.GetWear;
-import com.devops.backend.rewear.entities.User;
 import com.devops.backend.rewear.entities.Wear;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

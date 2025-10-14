@@ -5,7 +5,6 @@ import com.devops.backend.rewear.dtos.response.GetExchange;
 import com.devops.backend.rewear.services.ExchangeService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

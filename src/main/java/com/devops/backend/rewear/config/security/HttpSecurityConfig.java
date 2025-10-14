@@ -68,7 +68,6 @@ public class HttpSecurityConfig {
                 .build();
     }
 
-
     @Bean
     @Primary
     public CorsConfigurationSource corsConfigurationSource() {

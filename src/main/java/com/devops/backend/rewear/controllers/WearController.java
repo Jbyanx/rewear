@@ -1,9 +1,13 @@
 package com.devops.backend.rewear.controllers;
 
 import com.devops.backend.rewear.dtos.request.SaveWear;
+import com.devops.backend.rewear.dtos.request.UpdateWear;
 import com.devops.backend.rewear.dtos.request.WearFilter;
 import com.devops.backend.rewear.dtos.response.GetWear;
-import com.devops.backend.rewear.entities.enums.*;
+import com.devops.backend.rewear.entities.enums.Genre;
+import com.devops.backend.rewear.entities.enums.WearCategory;
+import com.devops.backend.rewear.entities.enums.WearCondition;
+import com.devops.backend.rewear.entities.enums.WearSize;
 import com.devops.backend.rewear.services.WearService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +42,11 @@ public class WearController {
     @PostMapping //el owner es automaticamente el principal
     public ResponseEntity<GetWear> save(@RequestBody @Valid SaveWear saveWear) {
         return ResponseEntity.ok(wearService.createWear(saveWear));
+    }
+
+    @PutMapping("/{id}") //el owner es automaticamente el principal
+    public ResponseEntity<GetWear> save(@PathVariable Long id , @RequestBody @Valid UpdateWear updateWear) {
+        return ResponseEntity.ok(wearService.updateWear(id, updateWear));
     }
 
     //desactivar o activar, solo el propietario y un admin pueden realizar esta accion

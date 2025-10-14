@@ -1,7 +1,6 @@
 package com.devops.backend.rewear.controllers;
 
-import com.devops.backend.rewear.dtos.request.SaveUser;
-import com.devops.backend.rewear.dtos.response.GetUser;
+import com.devops.backend.rewear.dtos.request.UpdateUser;
 import com.devops.backend.rewear.dtos.response.GetUserProfile;
 import com.devops.backend.rewear.entities.enums.UserStatus;
 import com.devops.backend.rewear.services.UserService;
@@ -54,8 +53,8 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<GetUserProfile> updateUser(
             @PathVariable Long id,
-            @Valid @RequestBody SaveUser saveUser
+            @Valid @RequestBody UpdateUser updateUser
     ) {
-        return ResponseEntity.ok(userService.updateById(id, saveUser));
+        return ResponseEntity.ok(userService.updateById(id, updateUser));
     }
 }

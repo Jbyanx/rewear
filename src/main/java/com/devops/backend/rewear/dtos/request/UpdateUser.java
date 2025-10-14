@@ -2,7 +2,9 @@ package com.devops.backend.rewear.dtos.request;
 
 import com.devops.backend.rewear.entities.enums.DocumentType;
 import com.devops.backend.rewear.entities.enums.Genre;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
 import java.time.LocalDate;
