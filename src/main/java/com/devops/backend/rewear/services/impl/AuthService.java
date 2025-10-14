@@ -87,7 +87,7 @@ public class AuthService {
             throw new BadCredentialsException("Credenciales inválidas");
         }
 
-        User user = userRepository.getReferenceByUsername(loginRequest.username())
+        User user = userRepository.findByUsername(loginRequest.username())
                 .orElseThrow(() -> new UserNotFoundException("El usuario " + loginRequest.username() + " no existe en BDD"));
 
         Map<String, Object> claims = generateExtraClaims(user);
