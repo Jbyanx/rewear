@@ -1,7 +1,6 @@
 package com.devops.backend.rewear.services.impl;
 
-import com.devops.backend.rewear.dtos.request.SaveUser;
-import com.devops.backend.rewear.dtos.response.GetUser;
+import com.devops.backend.rewear.dtos.request.UpdateUser;
 import com.devops.backend.rewear.dtos.response.GetUserProfile;
 import com.devops.backend.rewear.entities.User;
 import com.devops.backend.rewear.entities.enums.Role;
@@ -13,6 +12,7 @@ import com.devops.backend.rewear.exceptions.UsernameAlreadyExistsException;
 import com.devops.backend.rewear.mappers.UserMapper;
 import com.devops.backend.rewear.repositories.UserRepository;
 import com.devops.backend.rewear.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public GetUserProfile updateById(Long id, SaveUser saveUser) {
+    public GetUserProfile updateById(Long id, @Valid UpdateUser updateUser) {
         User currentUser = currentUserService.getAuthenticatedUser();
 
         if(!userRepository.existsById(id)) throw new UserNotFoundException("usuario con id "+id+" no encontrado en BDD");
@@ -97,29 +97,29 @@ public class UserServiceImpl implements UserService {
 
         User oldUser = userRepository.getReferenceById(id);
 
-        if (saveUser.firstName() != null) oldUser.setFirstName(saveUser.firstName());
-        if (saveUser.lastName() != null) oldUser.setLastName(saveUser.lastName());
-        if (saveUser.phoneNumber() != null) oldUser.setPhoneNumber(saveUser.phoneNumber());
-        if (saveUser.email() != null){
-            if(userRepository.existsByEmail(saveUser.email())){
-                throw new EmailAlreadyExistsException("Error al actualizar el usuario, el email "+saveUser.email()+" ya está en uso");
+        if (updateUser.firstName() != null) oldUser.setFirstName(updateUser.firstName());
+        if (updateUser.lastName() != null) oldUser.setLastName(updateUser.lastName());
+        if (updateUser.phoneNumber() != null) oldUser.setPhoneNumber(updateUser.phoneNumber());
+        if (updateUser.email() != null){
+            if(userRepository.existsByEmail(updateUser.email())){
+                throw new EmailAlreadyExistsException("Error al actualizar el usuario, el email "+updateUser.email()+" ya está en uso");
             }
-            oldUser.setEmail(saveUser.email());
+            oldUser.setEmail(updateUser.email());
         }
-        if (saveUser.username() != null){
-            if(userRepository.existsByUsername(saveUser.username())){
-                throw new UsernameAlreadyExistsException("Error al actualizar el usuario, el username "+saveUser.username()+" ya está en uso");
+        if (updateUser.username() != null){
+            if(userRepository.existsByUsername(updateUser.username())){
+                throw new UsernameAlreadyExistsException("Error al actualizar el usuario, el username "+updateUser.username()+" ya está en uso");
             }
-            oldUser.setUsername(saveUser.username());
+            oldUser.setUsername(updateUser.username());
         }
-        if (saveUser.address() != null) oldUser.setAddress(saveUser.address());
-        if (saveUser.city() != null) oldUser.setCity(saveUser.city());
-        if (saveUser.country() != null) oldUser.setCountry(saveUser.country());
-        if (saveUser.birthDate() != null) oldUser.setBirthDate(saveUser.birthDate());
-        if (saveUser.genre() != null) oldUser.setGenre(saveUser.genre());
-        if (saveUser.documentType() != null) oldUser.setDocumentType(saveUser.documentType());
-        if (saveUser.documentNumber() != null) oldUser.setDocumentNumber(saveUser.documentNumber());
-        if (saveUser.profileImageUrl() != null) oldUser.setProfileImageUrl(saveUser.profileImageUrl());
+        if (updateUser.address() != null) oldUser.setAddress(updateUser.address());
+        if (updateUser.city() != null) oldUser.setCity(updateUser.city());
+        if (updateUser.country() != null) oldUser.setCountry(updateUser.country());
+        if (updateUser.birthDate() != null) oldUser.setBirthDate(updateUser.birthDate());
+        if (updateUser.genre() != null) oldUser.setGenre(updateUser.genre());
+        if (updateUser.documentType() != null) oldUser.setDocumentType(updateUser.documentType());
+        if (updateUser.documentNumber() != null) oldUser.setDocumentNumber(updateUser.documentNumber());
+        if (updateUser.profileImageUrl() != null) oldUser.setProfileImageUrl(updateUser.profileImageUrl());
 
         return userMapper.toGetUserProfile(userRepository.save(oldUser));
     }
