@@ -85,36 +85,17 @@ public class WearServiceImpl implements WearService {
             throw new PermissionDeniedException("vaya, no tienes permisos para actualizar este recurso");
         }
 
-        if (!updateWear.name().isEmpty()){
-            wear.setName(updateWear.name());
-        }
-        if (!updateWear.description().isEmpty()){
-            wear.setDescription(updateWear.description());
-        }
-        if (updateWear.size() != null){
-            wear.setSize(updateWear.size());
-        }
-        if(updateWear.condition() != null){
-            wear.setCondition(updateWear.condition());
-        }
-        if(updateWear.category() != null){
-            wear.setCategory(updateWear.category());
-        }
-        if (!updateWear.brand().isEmpty()){
-            wear.setBrand(updateWear.brand());
-        }
-        if (!updateWear.color().isEmpty()){
-            wear.setColor(updateWear.color());
-        }
-        if(updateWear.genre() != null){
-            wear.setGenre(updateWear.genre());
-        }
-        if (!updateWear.material().isEmpty()){
-            wear.setMaterial(updateWear.material());
-        }
-        if (!updateWear.imageUrl().isEmpty()){
-            wear.setImageUrl(updateWear.imageUrl());
-        }
+        if (!updateWear.name().isEmpty()) wear.setName(updateWear.name());
+        if (!updateWear.description().isEmpty()) wear.setDescription(updateWear.description());
+        if (updateWear.size() != null) wear.setSize(updateWear.size());
+        if(updateWear.condition() != null) wear.setCondition(updateWear.condition());
+        if(updateWear.category() != null) wear.setCategory(updateWear.category());
+        if (!updateWear.brand().isEmpty()) wear.setBrand(updateWear.brand());
+        if (!updateWear.color().isEmpty()) wear.setColor(updateWear.color());
+        if(updateWear.genre() != null) wear.setGenre(updateWear.genre());
+        if (!updateWear.material().isEmpty()) wear.setMaterial(updateWear.material());
+        if (!updateWear.imageUrl().isEmpty()) wear.setImageUrl(updateWear.imageUrl());
+
         return wearMapper.toGetWear(wearRepository.save(wear));
     }
 }
