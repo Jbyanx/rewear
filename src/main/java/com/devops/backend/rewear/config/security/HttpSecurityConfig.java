@@ -36,20 +36,30 @@ public class HttpSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
                                                    AuthenticationEntryPoint authenticationEntryPoint,
-                                                   AccessDeniedHandler accessDeniedHandler, CorsConfigurationSource defaultCorsConfigurationSource) throws Exception {
+                                                   AccessDeniedHandler accessDeniedHandler,
+                                                   CorsConfigurationSource defaultCorsConfigurationSource) throws Exception {
+
         return http
-                .cors(Customizer.withDefaults()) // Spring busca automáticamente un bean CorsConfigurationSource
-                .csrf(AbstractHttpConfigurer::disable) // Se usa en stateful, por eso lo deshabilitamos
+                .cors(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .userDetailsService(userDetailsService) // Usar userDetailsService en lugar de authenticationProvider
+                .userDetailsService(userDetailsService)
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests
                             .requestMatchers("/oauth/**", "/auth/**").permitAll()
                             .requestMatchers("/h2-console/**").permitAll()
                             .requestMatchers("/error").permitAll()
+
+                            // 👇 Swagger endpoints públicos
+                            .requestMatchers(
+                                    "/v3/api-docs/**",
+                                    "/swagger-ui/**",
+                                    "/swagger-ui.html"
+                            ).permitAll()
+
                             .anyRequest().authenticated();
                 })
-                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin())) // 👈 necesario para H2 Console
+                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(e -> {
                     e.authenticationEntryPoint(authenticationEntryPoint);
@@ -57,6 +67,7 @@ public class HttpSecurityConfig {
                 })
                 .build();
     }
+
 
     @Bean
     @Primary
