@@ -110,15 +110,6 @@ public class GlobalExceptionHandler {
         return buildResponse(new RuntimeException("Cuerpo de la solicitud inválido o malformado."),
                 HttpStatus.BAD_REQUEST, request);
     }
-    // 🔹 credenciales erroneas
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ApiErrorResponse> handleBadCredentials(
-            HttpMessageNotReadableException ex, HttpServletRequest request
-    ) {
-        return buildResponse(new RuntimeException("Credenciales erroneas, verifique username o password."),
-                HttpStatus.BAD_REQUEST, request);
-    }
-
     // 🔹 Violación de integridad (FK, unique, etc.)
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiErrorResponse> handleDataIntegrity(
